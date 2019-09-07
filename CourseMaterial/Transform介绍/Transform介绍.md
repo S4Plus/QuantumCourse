@@ -436,11 +436,8 @@ SWAP i,j = CNOT i,j+H i+Hj+CNOT i,j+H i+Hj +CNOT i,j
 
 而在量子程序中，可能存在多个相同结构的子量子线路或多个相同的量子逻辑门，替换量子程序中指定结构的量子线路的功能就是找这些相同结构的子量子线路并把它们替换成目标量子线路。
 ## 接口介绍
-replaceSubGraph：替换量子程序中指定结构的量子线路,输入参数一为目标量子程序，输入参数二为目标量子线路，输入参数三为替换量子线路。返回值为替换后的量子程序。
+qnodeReplace：替换量子程序中指定结构的量子线路,输入参数一为查询图量子线路节点，输入参数二为替换量子线路节点，输入参数三为查询结果序，输入参数四为空的量子程序，输入参数五为主线路的拓扑序列，输入参数六为量子虚拟机指针。
 
-```
-QProg new_prog = replaceSubGraph(prog,target_circuit,replace_circuit);
-```
 ## 实例
 
 ```
@@ -449,32 +446,54 @@ USING_QPANDA
 
 int main(void)
 {
-    auto qvm = initQuantumMachine(QMachineType::CPU);
-    auto qubits = qvm->allocateQubits(2);
-    auto cbits = qvm->allocateCBits(2);
-    QProg prog;
-    prog << H(qubits[0])
-         << H(qubits[1])
-         << CNOT(qubits[0],qubits[1])
-         << RX(qubits[0], 3.14)
-         << H(qubits[1])
-         << Measure(qubits[0], cbits[0]);
-    QCircuit target_cir;
-    target_cir<< H(qubits[1])
-              << CNOT(qubits[0],qubits[1])
-              << H(qubits[1]);
-    QCircuit replace_cir;
-    replace_cir <<  CZ(qubits[0],qubits[1]);
+    auto qvm = initQuantumMachine();
+    auto q = qvm->allocateQubits(5);
+    auto c = qvm->allocateCBits(5);
 
-    std::string instructions = transformQProgToOriginIR(prog, qvm);
+/*
+    0----H-----RX-----Z----CNOT----------------
+                            |
+    1----H-----X------H------------------------
+
+    2----RY-----------------H------------------
+                      |
+    3---------CNOT---CNOT-----------RZ---------
+               |            |
+    4----H------------H----CNOT-----Y------RX--
+*/
+    auto prog = QProg();
+    prog << H(q[0]) << H(q[1]) << RY(q[2], PI / 2) << H(q[4])
+         << RX(q[0], PI / 2) << X(q[1]) << CNOT(q[4], q[3])
+         << Z(q[0]) << H(q[1]) << CNOT(q[2], q[3]) << H(q[4])
+         << CNOT(q[1], q[0]) << H(q[2]) << CNOT(q[3], q[4])
+         << RZ(q[3], PI / 2) << Y(q[4])
+         << RX(q[4], PI / 2);
+
     std::cout << "before replace" << std::endl;
-    std::cout << instructions << std::endl;
-    std::cout << std::endl;
-    auto new_prog = replaceSubGraph(prog,target_cir,replace_cir);
+    std::cout << transformQProgToOriginIR(prog, qvm) << endl << endl;
 
-    std::string new_instructions = transformQProgToOriginIR(prog, qvm);
+    auto query_cir = QCircuit();
+    query_cir << H(q[0]) ;
+
+    auto replace_cir = QCircuit();
+    replace_cir << Y(q[0]);
+
+    QNodeMatch dag_match;
+    TopologincalSequence graph_seq;
+    dag_match.getMainGraphSequence(prog, graph_seq);
+
+    TopologincalSequence query_seq;
+    dag_match.getQueryGraphSequence(query_cir, query_seq);
+
+    MatchVector result;
+    cout << dag_match.qnodeQuery(graph_seq, query_seq, result) << endl;
+
+    QProg update_prog;
+    dag_match.qnodeReplace(query_cir, replace_cir, result, graph_seq, update_prog, qvm);
+
     std::cout << "after replace" << std::endl;
-    std::cout << instructions << std::endl;
+    std::cout << transformQProgToOriginIR(update_prog, qvm);
+
     destroyQuantumMachine(qvm);
     return 0;
 }
@@ -482,32 +501,58 @@ int main(void)
 
 具体步骤如下:
 
-1. 首先在主程序中用 initQuantumMachine() 初始化一个量子虚拟机对象，用于管理后续一系列行为
+1. 首先在主程序中用 initQuantumMachine() 初始化一个量子虚拟机对象
 2. 接着用 allocateQubits() 和 allocateCBits() 初始化量子比特与经典寄存器数目
-3. 然后构建prog、target_cir、replace_cir，打印出prog的OriginIR；
-4. 最后调用接口 replaceSubGraph替代目标量子线路，并打印出new_prog的OriginIR。
+3. 然后构建主线路量子程序，打印出主线路的OriginIR；
+4. 然后分别获取主量子线路图以及查询量子线路图的拓扑序列
+5. 接着用qnodeQuery查询是否存在匹配的子图
+6. 最后调用接口qnodeReplace进行量子线路的替换
 
 运算结果
 
 ```
 before replace
-QINIT 2
-CREG 2
+QINIT 5
+CREG 5
 H q[0]
 H q[1]
-CNOT q[0],q[1]
-RX q[0], (3.14)
+RY q[2],(1.570796)
+H q[4]
+RX q[0],(1.570796)
+X q[1]
+CNOT q[4],q[3]
+Z q[0]
 H q[1]
-MEASURE q[0], c[0]
+CNOT q[2],q[3]
+H q[4]
+CNOT q[1],q[0]
+H q[2]
+CNOT q[3],q[4]
+RZ q[3],(1.570796)
+Y q[4]
+RX q[4],(1.570796)
 
 after replace
-QINIT 2
-CREG 2
-H q[0]
-CZ q[0],q[1]
-RX q[0], (3.14)
-MEASURE q[0], c[0]
+QINIT 5
+CREG 5
+RY q[2],(1.570796)
+Y q[0]
+Y q[1]
+Y q[4]
+RX q[0],(1.570796)
+X q[1]
+CNOT q[4],q[3]
+Z q[0]
+CNOT q[2],q[3]
+Y q[1]
+Y q[4]
+CNOT q[1],q[0]
+CNOT q[3],q[4]
+Y q[2]
+RZ q[3],(1.570796)
+Y q[4]
+RX q[4],(1.570796)
 ```
-使用replaceSubGraph需要注意
+使用qnodeQuery需要注意
 1. 量子程序中不能包含QIf，QWhile；
 2. 目标量子线路和替代量子线路控制的量子比特必须一一对应。
