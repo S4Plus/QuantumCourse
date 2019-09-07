@@ -310,8 +310,27 @@ sudo make install
 
 # 快速开始
 
-我们接下来通过一个示例介绍QPanda的使用，下面的例子可以在量子计算机中构建量子纠缠态(|00>+|11>)，对其进行测量，重复制备1000次。 预期的结果是约有50%的概率使测量结果分别在00或11上。
+们在QPanda的github库中添加了 [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
 
+例如对于linux系统，经过make install安装的QPanda会被放在/usr/local路径中。template/linux文件夹中包含两个文件：CMakeLists.txt和test.cpp。在该目录下我们可以通过下面的命令来编译出一个可执行文件：
+```
+mkdir -p build
+cd build
+cmake ..
+make
+```
+在build/release/bin下可以找到可执行文件，直接运行
+```
+./test
+```
+
+可以看到类似的计算结果（00和11在1000次测量中各约占50%）：
+```
+00 : 493
+11 : 507
+```
+
+test.cpp中的内容为：
 ```
 #include "Core/QPanda.h"
 #include <stdio.h>
@@ -332,12 +351,40 @@ int main()
     finalize();
 }
 ```
+可以看到通过#include "Core/QPanda.h"，并调用名字空间QPanda下的类和接口就能实现一个量子程序。这个量子程序制备Bell态(|00>+|11>)，对结果进行测量（重复1000次），可以得到00和11两种结果，约各占50%。
 
-示例程序的编译方式与编译QPanda库的方式基本类似，在这里就不多做赘述。我们在QPanda的github库中添加了  [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
+在其他平台下，使用方式是类似的。即利用CMakeLists.txt实现头文件的引用和QPanda库的链接。
 
-编译之后的可执行文件会生成在build下的bin文件夹中，进入到bin目录下就可以执行自己编写的量子程序了。
+# 快速开始(Python版)
 
-计算结果如下所示：
+即使不通过源码编译，也可以通过pip来快速安装pyQPanda（支持python 3.5-3.7）。
+```
+pip install pyqpanda
+```
+
+如果是通过源码编译（支持Python 3），库文件会自动被安装到QPanda根目录下的pyQPanda文件夹。进入pyQPanda文件夹，执行
+```
+python setup.py install
+```
+就可以统一被安装到python环境中。
+
+```
+# 导入pyqpanda包只需该行
+from pyqpanda import *
+
+init(QMachineType::CPU)
+prog = QProg()
+q = qalloc_many(2)
+c = calloc_many(2)
+prog.insert(H(q[0])).insert(CNOT(q[0],q[1])).insert(measure_all(q, c))
+results = run_with_configuration(prog, c, 1000)
+for result in results:
+    print("{}:{}\n".format(result[0], result[1]))
+
+finalize()
+```
+
+可以看到类似的计算结果（00和11在1000次测量中各约占50%）：
 ```
 00 : 493
 11 : 507
