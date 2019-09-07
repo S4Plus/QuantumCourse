@@ -374,14 +374,13 @@ python setup.py install
 # 导入pyqpanda包只需该行
 from pyqpanda import *
 
-init(QMachineType::CPU)
+init(QMachineType.CPU)
 prog = QProg()
-q = qalloc_many(2)
-c = calloc_many(2)
+q = qAlloc_many(2)
+c = cAlloc_many(2)
 prog.insert(H(q[0])).insert(CNOT(q[0],q[1])).insert(measure_all(q, c))
 results = run_with_configuration(prog, c, 1000)
-for result in results:
-    print("{}:{}\n".format(result[0], result[1]))
+print(results)
 
 finalize()
 ```
