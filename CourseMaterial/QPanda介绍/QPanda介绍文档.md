@@ -407,6 +407,7 @@ finalize()
 ![avatar](./img/SingleQGate.png)
 
 多比特量子逻辑门：
+
 ![avatar](./img/mulQGate.png)
 
 ### 使用量子逻辑门
