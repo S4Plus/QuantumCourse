@@ -1,3 +1,9 @@
+# QPanda介绍文档
+
+## 总览
+QPanda 2是由本源量子开发的开源量子计算框架，它可以用于构建、运行和优化量子算法。QPanda 2作为本源量子计算系列软件的基础库，为QRunes、Qurator、量子计算服务提供核心部件。
+
+
 - [研发理念](#研发理念)
 - [发展历程](#发展历程)
 - [开发框架](#开发框架)
@@ -198,7 +204,7 @@ QPanda可以适配Windows、Linux、MacOS三种操作系统，所以下面分别
 #### Visual Studio
 ##### 编译
 
-这里以Visual Studio 2017为例，使用Visual Studio 2017 编译QPanda,只需要安装Visual Studio 2017，并需要在组件中安装CMake组件。安装完成之后，用Visual Studio 2017打开QPanda文件夹，即可使用CMake编译QPanda。
+这里以Visual Studio 2017为例，使用Visual Studio 2017 编译QPanda,只需要安装Visual Studio 2017，**并需要在组件中安装CMake组件**。安装完成之后，用Visual Studio 2017打开QPanda文件夹，即可使用CMake编译QPanda。
 
 ![avatar](./img/VSCompiler.png)
 
@@ -242,18 +248,35 @@ mingw32-make install
 ```
 
 ### Linux 和 MacOS
+
+#### 环境要求
+
+    gcc/clang/（其它C++编译器）：支持C++14标准以及OpenMP
+    CMake 3.0 以上
+    Python 3.5 以上 (pyQPanda，可选)
+    CURL (量子云连接功能，可选)
+    MPI (在集群上运行量子虚拟机，可选)
+    CUDA 9 以上 (在GPU上运行量子虚拟机，可选)
+
 #### 编译
 
 进入QPanda根目录
 输入以下命令：
 
 ```
+（若已安装Python 3)
 mkdir -p build
 cd build
 cmake ..
 make
 ```
-
+```
+（若未安装Python 3)
+mkdir -p build
+cd build
+cmake .. -DUSE_PYQPANDA=OFF
+make
+```
 如果有需求，用户通过命令修改QPanda的安装路径，配置方法如下所示：
 
 ```
@@ -268,6 +291,19 @@ make
 ```
 sudo make install
 ```
+
+### FAQ
+
+1. Windows/Linux下CMake阶段出现CMakeWarning？
+
+    因为我们为单机/集群，CPU/GPU等等环境都进行了适配，并且支持量子云连接。这些功能对于单机运行QPanda是可选的，平常配置中处于关闭状态，未找到的时候就会报CMakeWarning，请忽略。
+
+2. Windows/Linux下CMake阶段出现CMakeError？
+
+    最常见的CMakeError是出现在Python未找到。我们默认打开了pyQPanda的编译，由于我们考虑到用户主要以Python形式使用这个库。如果只是想用C++的库，在cmake ..后增加-DUSE_PYQPANDA=OFF（参见Linux编译部分）。
+
+    其它的CMakeError，请在github上提issue，我们会在一天之内给出解答。
+
 
 # 快速开始
 
