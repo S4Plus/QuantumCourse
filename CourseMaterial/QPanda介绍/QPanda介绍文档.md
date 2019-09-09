@@ -312,7 +312,7 @@ sudo make install
 
 # 快速开始
 
-们在QPanda的github库中添加了 [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
+为了方便大家使用，QPanda的github库中添加了 [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
 
 例如对于linux系统，经过make install安装的QPanda会被放在/usr/local路径中。template/linux文件夹中包含两个文件：CMakeLists.txt和test.cpp。在该目录下我们可以通过下面的命令来编译出一个可执行文件：
 ```
