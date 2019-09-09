@@ -312,7 +312,7 @@ sudo make install
 
 # 快速开始
 
-们在QPanda的github库中添加了 [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
+为了方便大家使用，QPanda的github库中添加了 [Template](https://github.com/OriginQ/qpanda-2/tree/master/Template "Template")文件夹，用于展示各个平台的使用案例。
 
 例如对于linux系统，经过make install安装的QPanda会被放在/usr/local路径中。template/linux文件夹中包含两个文件：CMakeLists.txt和test.cpp。在该目录下我们可以通过下面的命令来编译出一个可执行文件：
 ```
@@ -356,6 +356,18 @@ int main()
 可以看到通过#include "Core/QPanda.h"，并调用名字空间QPanda下的类和接口就能实现一个量子程序。这个量子程序制备Bell态(|00>+|11>)，对结果进行测量（重复1000次），可以得到00和11两种结果，约各占50%。
 
 在其他平台下，使用方式是类似的。即利用CMakeLists.txt实现头文件的引用和QPanda库的链接。
+
+在Linux下，我们也可以使用g++编译test.cpp，编译命令如下所示：
+
+```
+g++ test.cpp -std=c++14 -fopenmp -I{QPanda安装路径}/include/qpanda2/ -I{QPanda安装路径}/include/qpanda2/ThirdParty/ -L{QPanda安装路径}/lib/ -lQPanda2 -lTinyXML -o test
+```
+
+如果我们的宿主机上安装了libcurl，则编译命令如下所示：
+
+```
+g++ test.cpp -std=c++14 -fopenmp -I{QPanda安装路径}/include/qpanda2/ -I{QPanda安装路径}/include/qpanda2/ThirdParty/ -L{QPanda安装路径}/lib/ -lQPanda2 -lTinyXML -lcurl -o test
+```
 
 # 快速开始(Python版)
 
