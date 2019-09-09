@@ -357,6 +357,18 @@ int main()
 
 在其他平台下，使用方式是类似的。即利用CMakeLists.txt实现头文件的引用和QPanda库的链接。
 
+在Linux下，我们也可以使用g++编译test.cpp，编译命令如下所示：
+
+```
+g++ test.cpp -std=c++14 -fopenmp -I{QPanda安装路径}/include/qpanda2/ -I{QPanda安装路径}/include/qpanda2/ThirdParty/ -L{QPanda安装路径}/lib/ -lQPanda2 -lTinyXML -o test
+```
+
+如果我们的宿主机上安装了libcurl，则编译命令如下所示：
+
+```
+g++ test.cpp -std=c++14 -fopenmp -I{QPanda安装路径}/include/qpanda2/ -I{QPanda安装路径}/include/qpanda2/ThirdParty/ -L{QPanda安装路径}/lib/ -lQPanda2 -lTinyXML -lcurl -o test
+```
+
 # 快速开始(Python版)
 
 即使不通过源码编译，也可以通过pip来快速安装pyQPanda（支持python 3.5-3.7）。
