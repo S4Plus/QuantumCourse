@@ -1765,7 +1765,7 @@ QGate number: 5
 
 ## 统计量子程序时钟周期
 
-已知每个量子逻辑门在运行时所需时间的条件下，估算一个量子程序运行所需要的时间。每个量子逻辑门的时间设置在项目的元数据配置文件 QPandaConfig.xml 中， 如果未设置则会给定一个默认值，单量子门的默认时间为2，双量子门的时间为5。
+已知每个量子逻辑门在运行时所需时间的条件下，估算一个量子程序运行所需要的时间。每个量子逻辑门的时间设置在项目的元数据配置文件 [QPandaConfig.xml](https://github.com/OriginQ/QPanda-2/blob/master/QPandaConfig.xml "QPandaConfig.xml") 中， 如果未设置则会给定一个默认值，单量子门的默认时间为2，双量子门的时间为5。
 
 配置文件可仿照下面设置:
 
@@ -2439,7 +2439,7 @@ bool result = isSwappable(prog,node_iter,last_node_iter);
 ```
 
 ## 判断逻辑门是否属于量子芯片支持的量子逻辑门集合
-量子芯片支持的量子逻辑门集合可在元数据配置文件QPandaConfig.xml 中配置。如果我们没有设置配置文件，QPanda会默认设置一个默认量子逻辑门集合。
+量子芯片支持的量子逻辑门集合可在元数据配置文件 [QPandaConfig.xml](https://github.com/OriginQ/QPanda-2/blob/master/QPandaConfig.xml "QPandaConfig.xml") 中配置。如果我们没有设置配置文件，QPanda会默认设置一个默认量子逻辑门集合。
 
 默认集合如下所示：
 ```
