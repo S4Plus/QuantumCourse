@@ -428,7 +428,7 @@ MEASURE 0 [0]
 在量子计算中，存在一些量子逻辑门或量子线路是可以相互替代的：
 
 ```
-SWAP i,j = CNOT i,j+H i+Hj+CNOT i,j+H i+Hj +CNOT i,j 
+SWAP i,j = CNOT i,j+CNOT j,i+CNOT i,j 
 ```
 如图：
 
