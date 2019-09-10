@@ -436,7 +436,7 @@ SWAP i,j = CNOT i,j+CNOT j,i+CNOT i,j
 
 而在量子程序中，可能存在多个相同结构的子量子线路或多个相同的量子逻辑门，替换量子程序中指定结构的量子线路的功能就是找这些相同结构的子量子线路并把它们替换成目标量子线路。
 ## 接口介绍
-qnodeReplace：替换量子程序中指定结构的量子线路,输入参数一为查询图量子线路节点，输入参数二为替换量子线路节点，输入参数三为查询结果序，输入参数四为空的量子程序，输入参数五为主线路的拓扑序列，输入参数六为量子虚拟机指针。
+graphReplace：替换量子程序中指定结构的量子线路,输入参数一为查询图量子线路节点，输入参数二为替换量子线路节点，输入参数三为查询结果序，输入参数四为空的量子程序，输入参数五为主线路的拓扑序列，输入参数六为量子虚拟机指针。
 
 ## 实例
 
@@ -486,10 +486,10 @@ int main(void)
     dag_match.getQueryGraphSequence(query_cir, query_seq);
 
     MatchVector result;
-    cout << dag_match.qnodeQuery(graph_seq, query_seq, result) << endl;
+    cout << dag_match.graphQuery(graph_seq, query_seq, result) << endl;
 
     QProg update_prog;
-    dag_match.qnodeReplace(query_cir, replace_cir, result, graph_seq, update_prog, qvm);
+    dag_match.graphReplace(query_cir, replace_cir, result, graph_seq, update_prog, qvm);
 
     std::cout << "after replace" << std::endl;
     std::cout << transformQProgToOriginIR(update_prog, qvm);
@@ -505,8 +505,8 @@ int main(void)
 2. 接着用 allocateQubits() 和 allocateCBits() 初始化量子比特与经典寄存器数目
 3. 然后构建主线路量子程序，打印出主线路的OriginIR；
 4. 然后分别获取主量子线路图以及查询量子线路图的拓扑序列
-5. 接着用qnodeQuery查询是否存在匹配的子图
-6. 最后调用接口qnodeReplace进行量子线路的替换
+5. 接着用graphQuery查询是否存在匹配的子图
+6. 最后调用接口graphReplace进行量子线路的替换
 
 运算结果
 
@@ -553,6 +553,6 @@ RZ q[3],(1.570796)
 Y q[4]
 RX q[4],(1.570796)
 ```
-使用qnodeQuery需要注意
+使用graphQuery需要注意
 1. 量子程序中不能包含QIf，QWhile；
 2. 目标量子线路和替代量子线路控制的量子比特必须一一对应。
