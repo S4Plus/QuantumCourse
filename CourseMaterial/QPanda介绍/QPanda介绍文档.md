@@ -256,6 +256,7 @@ mingw32-make install
 
     gcc/clang/（其它C++编译器）：支持C++14标准以及OpenMP
     CMake 3.0 以上
+    pkg-config工具(Linux,必须。Ubuntu下使用 sudo apt-get install pkg-config 安装,CentOS下需要下载源码编译)
     UUID库（Linux，必须。Ubuntu下使用 sudo apt-get install uuid-dev 安装，
             CentOS下使用yum install libuuid-devel安装）
     Python 3.5 以上 (pyQPanda，可选)
