@@ -322,9 +322,9 @@ cd build
 cmake ..
 make
 ```
-在build/release/bin下可以找到可执行文件，直接运行
+在build/bin下可以找到可执行文件，直接运行
 ```
-./test
+./testQPanda
 ```
 
 可以看到类似的计算结果（00和11在1000次测量中各约占50%）：
