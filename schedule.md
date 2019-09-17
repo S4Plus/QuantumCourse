@@ -4,10 +4,10 @@
 本课程采用教师课程讲授、学生课堂讨论、课程设计(各占1/3)形式进行。
 
 ## 授课内容
-2019.9.10 量子计算与量子编程语言简介: [CourseIntro](https://www.educoder.net/api/attachments/388493?disposition=inline), [intro](https://www.educoder.net/api/attachments/388495?disposition=inline)
-2019.9.17 QPanda编程实践: [QPanda](https://www.educoder.net/api/attachments/392341?disposition=inline)
-2019.9.24 量子算法，如Deutsch-Josza算法、量子Fourier变换、Grover算法等
-2019.10.8 课程研讨（量子算法及实现）
+- 2019.9.10 量子计算与量子编程语言简介: [CourseIntro](https://www.educoder.net/api/attachments/388493?disposition=inline), [intro](https://www.educoder.net/api/attachments/388495?disposition=inline)
+- 2019.9.17 QPanda编程实践: [QPanda](https://www.educoder.net/api/attachments/392341?disposition=inline)
+- 2019.9.24 量子算法，如Deutsch-Josza算法、量子Fourier变换、Grover算法等
+- 2019.10.8 课程研讨（量子算法及实现）
 
 4. 华为HiQ量子计算实践
 5. 量子编译系统
