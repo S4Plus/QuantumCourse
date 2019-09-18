@@ -478,7 +478,7 @@ int main(void)
     auto replace_cir = QCircuit();
     replace_cir << Y(q[0]);
 
-    graphQueryReplace(prog, query_cir, replace_cir, update_prog,qvm);
+    graphQueryReplace(prog, query_cir, replace_cir, update_prog, qvm);
     std::cout << "after replace" << std::endl;
     std::cout << transformQProgToOriginIR(update_prog, qvm);
 
