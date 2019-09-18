@@ -478,19 +478,7 @@ int main(void)
     auto replace_cir = QCircuit();
     replace_cir << Y(q[0]);
 
-    QNodeMatch dag_match;
-    TopologincalSequence graph_seq;
-    dag_match.getMainGraphSequence(prog, graph_seq);
-
-    TopologincalSequence query_seq;
-    dag_match.getQueryGraphSequence(query_cir, query_seq);
-
-    MatchVector result;
-    cout << dag_match.graphQuery(graph_seq, query_seq, result) << endl;
-
-    QProg update_prog;
-    dag_match.graphReplace(query_cir, replace_cir, result, graph_seq, update_prog, qvm);
-
+    graphQueryReplace(prog, query_cir, replace_cir, update_prog,qvm);
     std::cout << "after replace" << std::endl;
     std::cout << transformQProgToOriginIR(update_prog, qvm);
 
@@ -504,9 +492,8 @@ int main(void)
 1. 首先在主程序中用 initQuantumMachine() 初始化一个量子虚拟机对象
 2. 接着用 allocateQubits() 和 allocateCBits() 初始化量子比特与经典寄存器数目
 3. 然后构建主线路量子程序，打印出主线路的OriginIR；
-4. 然后分别获取主量子线路图以及查询量子线路图的拓扑序列
-5. 接着用graphQuery查询是否存在匹配的子图
-6. 最后调用接口graphReplace进行量子线路的替换
+4. 构建目标量子线路和替代量子线路
+5. 最后调用接口graphQueryReplace进行量子线路的替换，打印替换后主线路量子程序的OriginIR
 
 运算结果
 
@@ -553,6 +540,6 @@ RZ q[3],(1.570796)
 Y q[4]
 RX q[4],(1.570796)
 ```
-使用graphQuery需要注意
+使用graphQueryReplace需要注意
 1. 量子程序中不能包含QIf，QWhile；
 2. 目标量子线路和替代量子线路控制的量子比特必须一一对应。
