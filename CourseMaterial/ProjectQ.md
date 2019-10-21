@@ -1,12 +1,15 @@
-# ProjectQ
+# ProjectQ and HiQ
 
-ProjectQ is an open source effort for quantum computing.
+[ProjectQ](http://projectq.ch/) is an open source effort for quantum computing.
 
 ## Resources
 
 - [Tutorial](https://projectq.readthedocs.io/en/latest/tutorials.html)
 - [Examples](https://projectq.readthedocs.io/en/latest/examples.html#examples)
 - [Code Documentation](https://projectq.readthedocs.io/en/latest/projectq.html#code-doc)
+
+- [HiQ在线编程界面](https://hiq.huaweicloud.com:9002/ide)
+- [HiQ模拟器](https://github.com/Huawei-HiQ/HiQsimulator)
 
 ## 安装 ProjectQ
 ### Python安装
