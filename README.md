@@ -11,7 +11,7 @@
 ## 课程资源
 - [课程安排](schedule.md)
 - [课程论坛与作业 (EduCoder)](https://www.educoder.net/courses/3030/)
-- 本站资源：[QPanda](CourseMaterial/QPanda介绍/QPanda介绍文档.md)，[ProjectQ](CourseMaterial/ProjectQ.md), 
+- 本站资源：[QPanda](CourseMaterial/QPanda介绍/QPanda介绍文档.md)，[ProjectQ与HiQ](CourseMaterial/ProjectQ.md), 
   [量子程序变换](CourseMaterial/Transform介绍/Transform介绍.md)
 - [其他资源链接](http://s4lab.ustc.edu.cn/quantum/list.htm)
 
