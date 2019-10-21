@@ -6,10 +6,10 @@
 ## 授课内容
 - 2019.9.10 第1讲 量子计算与量子编程语言简介: [CourseIntro](https://www.educoder.net/api/attachments/388493?disposition=inline), [intro](https://www.educoder.net/api/attachments/388495?disposition=inline)
 - 2019.9.17 第2讲 QPanda编程实践: [QPanda](https://www.educoder.net/api/attachments/392341?disposition=inline)
-- 2019.9.24 第3讲 量子算法，如Deutsch-Josza算法、量子Fourier变换、Grover算法等
+- 2019.9.24 第3讲 量子算法，如Deutsch-Josza算法、量子Fourier变换、Grover算法等 [QAlgo](https://www.educoder.net/api/attachments/400558?disposition=inline)
 - 2019.10.8 课程研讨（量子算法及实现）
-- 2019.10.15 第4讲 量子控制体系结构
-- 2019.10.22 第5讲 ProjectQ与华为HiQ
+- 2019.10.15 第4讲 量子控制体系结构 [QArch](https://www.educoder.net/api/attachments/419607?disposition=inline)
+- 2019.10.22 第5讲 ProjectQ与华为HiQ [ProjectQ](https://www.educoder.net/api/attachments/431202?disposition=inline)
 
 5. 量子编译系统
 6. 量子程序的模拟与评测
