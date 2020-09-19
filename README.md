@@ -13,5 +13,5 @@
 - [课程论坛与作业 (EduCoder)](https://www.educoder.net/courses/3030/)
 - 本站资源：[QPanda](CourseMaterial/QPanda介绍/QPanda介绍文档.md)，[ProjectQ与HiQ](CourseMaterial/ProjectQ.md), 
   [量子程序变换](CourseMaterial/Transform介绍/Transform介绍.md)
-- [其他资源链接](http://s4lab.ustc.edu.cn/quantum/list.htm)
-
+- 安装与入门：[Ubuntu+Python](https://github.com/S4Plus/ABC/blob/master/OS/ubuntu.md)、[Quantum-related Software/Tools](https://github.com/S4Plus/ABC/tree/master/quantum)
+- [其他资源链接](http://s4plus.ustc.edu.cn/quantum/list.htm)
