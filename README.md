@@ -9,8 +9,8 @@
 张昱、郭国平、陈昭昀、吴玉椿
 
 ## 课程资源
-- [课程安排](schedule.md)
-- [课程论坛与作业 (EduCoder)](https://www.educoder.net/courses/3030/)
+- [2020秋季课程](2020fall/): [EduCoder](https://www.educoder.net/courses/9109/)
+- [2019秋季课程](2019fall/): [课程安排](2019fall/schedule.md), [论坛与作业 (EduCoder)](https://www.educoder.net/courses/3030/)
 - 本站资源：[QPanda](CourseMaterial/QPanda介绍/QPanda介绍文档.md)，[ProjectQ与HiQ](CourseMaterial/ProjectQ.md), 
   [量子程序变换](CourseMaterial/Transform介绍/Transform介绍.md)
 - 安装与入门：[Ubuntu+Python](https://github.com/S4Plus/ABC/blob/master/OS/ubuntu.md)、[Quantum-related Software/Tools](https://github.com/S4Plus/ABC/tree/master/quantum)
