@@ -16,4 +16,4 @@
 
 ## 参考书目
 - 郭国平、陈昭昀、郭光灿. 量子计算机与编程入门. 科学出版社. [pdf](https://alicliimg.clewm.net/455/385/5385455/1568366127817bd5cb14158c119bfa8c00b981cc73bf81568366108.pdf)
-- 其他参见 [这里](http://s4lab.ustc.edu.cn/2018/1225/c17737a372334/page.htm)
+- 其他参见 [这里](http://s4plus.ustc.edu.cn/2018/1225/c17737a372334/page.htm)
