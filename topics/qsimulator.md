@@ -1,11 +1,12 @@
 ## 量子计算模拟
 
+- [ICS 2021] [HyQuas: hybrid partitioner based quantum circuit simulation system on GPU](https://dl.acm.org/doi/abs/10.1145/3447818.3460357)
+
 - [DAC2020] [Just Like the Real Thing: Fast Weak Simulation of Quantum Computation](https://ieeexplore.ieee.org/document/9218555)
 - [DAC2020] [Eliminating Redundant Computation in Noisy
   Quantum Computing Simulation](https://ieeexplore.ieee.org/document/9218666)
 - [DAC2020] [The Power of Simulation for
   Equivalence Checking in Quantum Computing](https://ieeexplore.ieee.org/document/9218563)
-
 
 
 - [1997] [Monte Carlo simulation of quantum computation](https://arxiv.org/pdf/quant-ph/9703050.pdf)
