@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/main.cpp
+iostream
+-
+fstream
+-
+vector
+-
+utility
+-
+quantum.h
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/quantum.h
+scheduler.h
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/scheduler.h
+
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/quantum.h
+vector
+-
+string
+-
+
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/scheduler.h
+quantum.h
+/home/yzf/workspace/p3kzclwhe/practical_algorithm/quantum.h
+vector
+-
+

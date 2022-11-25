@@ -1,0 +1,19 @@
+FROM
+h 1 2 
+cx 2 1 2 
+tdg 1 2 
+cx 2 0 2 
+t 1 2 
+cx 2 1 2 
+tdg 1 2 
+cx 2 0 2 
+t 1 1 
+t 1 2 
+h 1 2 
+cx 2 0 1 
+t 1 0 
+tdg 1 1 
+cx 2 0 1 
+
+TO
+ccx 3 0 1 2 

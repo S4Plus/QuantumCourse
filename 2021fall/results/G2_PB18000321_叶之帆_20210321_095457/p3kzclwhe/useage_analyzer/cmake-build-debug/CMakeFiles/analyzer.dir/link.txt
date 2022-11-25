@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/analyzer.dir/src/main.cpp.o CMakeFiles/analyzer.dir/src/QASMParser.cpp.o  -o analyzer 

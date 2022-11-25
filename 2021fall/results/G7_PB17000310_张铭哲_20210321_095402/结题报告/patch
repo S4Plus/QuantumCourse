@@ -1,0 +1,889 @@
+diff --git a/.gitignore b/.gitignore
+index 7e1c3f5..b6658a0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,6 +6,3 @@ docs/build
+ venv
+ docs/source/doxyoutput
+ docs/source/api
+-build/
+-bin/
+-*.exe
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 401b016..735d465 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -276,7 +276,6 @@ endif()
+ add_subdirectory(tutorials)
+ add_subdirectory(benchmarks)
+ add_subdirectory(interface)
+-add_subdirectory(tests)
+ 
+ 
+ # INFO: when below flag is defined, checks of the form "assert(condition)" are skipped.
+diff --git a/examples/communication_reduction_via_qubit_reordering.cpp b/examples/communication_reduction_via_qubit_reordering.cpp
+index 040fad0..553023f 100644
+--- a/examples/communication_reduction_via_qubit_reordering.cpp
++++ b/examples/communication_reduction_via_qubit_reordering.cpp
+@@ -1,5 +1,5 @@
+ //------------------------------------------------------------------------------
+-// Copyright (C) 2020 Intel Corporation
++// Copyright (C) 2020 Intel Corporation 
+ //
+ // Licensed under the Apache License, Version 2.0 (the "License");
+ // you may not use this file except in compliance with the License.
+@@ -26,25 +26,25 @@
+ /// Simple program to illustrate how the communication overhead between MPI
+ /// processes can be reduced by reordering the qubits.
+ 
++
+ /////////////////////////////////////////////////////////////////////////////////////////
+ /////////////////////////////////////////////////////////////////////////////////////////
+ 
+ int main(int argc, char **argv)
+ {
+   qhipster::mpi::Environment env(argc, argv);
+-  if (env.IsUsefulRank() == false)
+-    return 0;
++  if (env.IsUsefulRank() == false) return 0;
+   int myrank = env.GetStateRank();
+-  if (myrank == 0)
+-    std::cout << " ------------------------------------------------------------ \n"
+-              << " ---- Reducing communication overhead via qubit reordering -- \n"
+-              << " ------------------------------------------------------------ \n";
++  if (myrank==0)
++      std::cout << " ------------------------------------------------------------ \n"
++                << " ---- Reducing communication overhead via qubit reordering -- \n"
++                << " ------------------------------------------------------------ \n";
+ 
+   int num_qubits = 22;
+   if (argc != 2)
+   {
+-    if (myrank == 0)
+-      fprintf(stderr, "usage: %s <num_qubits>\n", argv[0]);
++    if (myrank==0)
++        fprintf(stderr, "usage: %s <num_qubits>\n", argv[0]);
+     exit(1);
+   }
+   else
+@@ -52,22 +52,23 @@ int main(int argc, char **argv)
+     num_qubits = atoi(argv[1]);
+   }
+ 
+-  if (num_qubits < 22)
++  if (num_qubits<22)
+   {
+-    if (myrank == 0)
+-      fprintf(stderr, "simulate circuits of at least 22 qubits\n");
++    if (myrank==0)
++        fprintf(stderr, "simulate circuits of at least 22 qubits\n");
+     exit(1);
+   }
+ 
++
+ #pragma omp parallel
+ #pragma omp master
+   {
+     int nthreads = omp_get_num_threads();
+-    if (myrank == 0)
++    if (myrank==0)
+       fprintf(stdout, "OMP number of threads = %d \n", nthreads);
+   }
+ 
+-  /////////////////////////////////////////////////////////////////////////////////////////
++/////////////////////////////////////////////////////////////////////////////////////////
+ 
+   // Variables for the timing.
+   struct timeval time;
+@@ -77,62 +78,62 @@ int main(int argc, char **argv)
+ 
+   // We consider a simple circuit, with Hadamard, X, Y, Z acting on the last 10 qubits.
+   QubitRegister<ComplexDP> psi_trivial_order(num_qubits, "base", 0);
+-  // psi_trivial_order.ApplyPauliZ(num_qubits-1); // dummy operation to avoid the first MPI communication during timing
++  psi_trivial_order.ApplyPauliZ(num_qubits-1); // dummy operation to avoid the first MPI communication during timing
+ 
+   std::vector<std::size_t> original_map = psi_trivial_order.qubit_permutation->map;
+   std::vector<std::size_t> new_map(num_qubits);
+   for (std::size_t q = 0; q < num_qubits; q++)
+   {
+-    // Verify that qubit order is trivial.
+-    assert(original_map[q] == q);
+-    // create inverse map.
+-    new_map[num_qubits - q - 1] = q;
++      // Verify that qubit order is trivial.
++      assert(original_map[q] == q);
++      // create inverse map.
++      new_map[num_qubits-q-1] = q;
+   }
+-
++ 
+   // Simulate circuit.
+   qhipster::mpi::StateBarrier();
+-  gettimeofday(&time, (struct timezone *)0);
+-  start = time.tv_sec + time.tv_usec * 1.0e-6;
+-  for (int q = num_qubits - 3; q < num_qubits; ++q)
++  gettimeofday(&time, (struct timezone*)0);
++  start =  time.tv_sec + time.tv_usec * 1.0e-6;
++  for (int q=num_qubits-10; q<num_qubits; ++q)
+   {
+     psi_trivial_order.ApplyHadamard(q);
+     psi_trivial_order.ApplyPauliX(q);
+     psi_trivial_order.ApplyPauliY(q);
+     psi_trivial_order.ApplyPauliZ(q);
+-  }
++  } 
+   qhipster::mpi::StateBarrier();
+-  gettimeofday(&time, (struct timezone *)0);
+-  end = time.tv_sec + time.tv_usec * 1.0e-6;
+-  if (myrank == 0)
+-    std::cout << "trivial qubit order --> Simulation time = " << end - start << "\n";
+-
+-  /////////////////////////////////////////////////////////////////////////////////////////
++  gettimeofday(&time, (struct timezone*)0);
++  end =  time.tv_sec + time.tv_usec * 1.0e-6;
++  if (myrank==0)
++      std::cout << "trivial qubit order --> Simulation time = " << end-start << "\n";
++  
++/////////////////////////////////////////////////////////////////////////////////////////
+ 
+   QubitRegister<ComplexDP> psi_inverse_order(num_qubits, "base", 0);
+   psi_inverse_order.PermuteQubits(new_map, "direct");
+-  // psi_trivial_order.ApplyPauliZ(0); // dummy operation to avoid the first MPI communication during timing
++  psi_trivial_order.ApplyPauliZ(0); // dummy operation to avoid the first MPI communication during timing
+   // Simulate circuit.
+   qhipster::mpi::StateBarrier();
+-  gettimeofday(&time, (struct timezone *)0);
+-  start = time.tv_sec + time.tv_usec * 1.0e-6;
+-  for (int q = num_qubits - 3; q < num_qubits; ++q)
++  gettimeofday(&time, (struct timezone*)0);
++  start =  time.tv_sec + time.tv_usec * 1.0e-6;
++  for (int q=num_qubits-10; q<num_qubits; ++q)
+   {
+     psi_inverse_order.ApplyHadamard(q);
+     psi_inverse_order.ApplyPauliX(q);
+     psi_inverse_order.ApplyPauliY(q);
+     psi_inverse_order.ApplyPauliZ(q);
+-  }
++  } 
+   qhipster::mpi::StateBarrier();
+-  gettimeofday(&time, (struct timezone *)0);
+-  end = time.tv_sec + time.tv_usec * 1.0e-6;
+-  if (myrank == 0)
+-    std::cout << "inverse qubit order --> Simulation time = " << end - start << "\n";
+-
++  gettimeofday(&time, (struct timezone*)0);
++  end =  time.tv_sec + time.tv_usec * 1.0e-6;
++  if (myrank==0)
++      std::cout << "inverse qubit order --> Simulation time = " << end-start << "\n";
++    
+   // Verify that the final state is the same.
+   psi_inverse_order.PermuteQubits(original_map, "direct");
+   double overlap_sq = std::norm(psi_trivial_order.ComputeOverlap(psi_inverse_order));
+-  if (myrank == 0)
+-    std::cout << "Squared overlap of states at the end of the two simulations = " << overlap_sq << "\n\n";
+-
++  if (myrank==0)
++      std::cout << "Squared overlap of states at the end of the two simulations = " << overlap_sq << "\n\n";
++         
+   return 0;
+ }
+diff --git a/include/dag.hpp b/include/dag.hpp
+deleted file mode 100644
+index 30080a7..0000000
+--- a/include/dag.hpp
++++ /dev/null
+@@ -1,67 +0,0 @@
+-/// @file dag.hpp
+-/// @brief Declare the @c DAGCircuit class.
+-
+-#ifndef DAG_HPP
+-#define DAG_HPP
+-
+-#include <vector>
+-#include <set>
+-#include <map>
+-#include <algorithm>
+-
+-enum class GateType
+-{
+-    Hadamard,
+-    PauliX,
+-    PauliY,
+-    PauliZ,
+-    CPauliX,
+-    CPauliY,
+-    CPauliZ,
+-};
+-
+-typedef struct DAGVertex
+-{
+-    int id;
+-    GateType type;
+-    std::vector<unsigned> qubits;
+-    bool is_removed;
+-} DAGVertex;
+-
+-void hello();
+-
+-class DAGCircuit
+-{
+-private:
+-    int v_num;
+-    int num_qubits;
+-    std::map<int, std::set<int>> v2inedges;
+-    std::map<int, std::set<int>> v2outedges;
+-
+-public:
+-    std::vector<DAGVertex> vertices;
+-
+-    // Constructors
+-    DAGCircuit(int _num_qubits);
+-
+-    template <typename... T>
+-    void AddVertex(GateType type, T... args)
+-    {
+-        std::vector<unsigned> qubits{std::forward<T>(args)...};
+-        return AddVertex(type, qubits);
+-    };
+-    void AddVertex(GateType type, std::vector<unsigned> qubits);
+-
+-    // remove a vertex and all its outcoming edges from the graph
+-    void RemoveVertex(DAGVertex &v);
+-
+-    int getQubitNum();
+-    // num of vertices in current graph
+-    int getVertexNum();
+-    // calculate how many incoming edges does vertex v have currently
+-    int getInedgeNum(DAGVertex &v);
+-
+-    // print graph for debug
+-    void printGraph();
+-};
+-#endif
+\ No newline at end of file
+diff --git a/include/gate_schedule.hpp b/include/gate_schedule.hpp
+deleted file mode 100644
+index 1de593a..0000000
+--- a/include/gate_schedule.hpp
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/// @file gate_schedule.hpp
+-
+-#ifndef GATE_SCHEDULE_HPP
+-#define GATE_SCHEDULE_HPP
+-#include "dag.hpp"
+-
+-void identity_permutation(std::vector<std::size_t> &sigma);
+-bool is_local_qubit(std::vector<std::size_t> &sigma, unsigned qubit, std::size_t m);
+-int get_local_qubits_num(std::vector<std::size_t> &sigma, std::vector<unsigned> &qubits, std::size_t m);
+-void scheduler(DAGCircuit &G, QubitRegister<> &psi);
+-
+-#endif
+\ No newline at end of file
+diff --git a/include/qureg.hpp b/include/qureg.hpp
+index bc7cd37..049ae77 100644
+--- a/include/qureg.hpp
++++ b/include/qureg.hpp
+@@ -37,7 +37,6 @@
+ #include "conversion.hpp"
+ #include "tinymatrix.hpp"
+ #include "gate_spec.hpp"
+-#include "dag.hpp"
+ 
+ /////////////////////////////////////////////////////////////////////////////////////////
+ 
+@@ -290,8 +289,6 @@ class QubitRegister
+ 
+   void ApplyCPhaseRotation(unsigned const qubit, unsigned const qubit2, BaseType theta);
+   
+-  void ApplyGate(DAGVertex &v);
+-  
+   // fusion  
+   void TurnOnFusion(unsigned log2llc = 20);
+   void TurnOffFusion();
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index fa9216f..41f8fce 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -24,8 +24,6 @@ set(IQS_FILES
+   utils.cpp
+   rng_utils.cpp
+   gate_spec.cpp
+-  dag.cpp
+-  gate_schedule.cpp
+   CACHE INTERNAL "" FORCE)
+ 
+ add_library(iqs SHARED ${IQS_FILES})
+diff --git a/src/dag.cpp b/src/dag.cpp
+deleted file mode 100644
+index b5bc6e6..0000000
+--- a/src/dag.cpp
++++ /dev/null
+@@ -1,103 +0,0 @@
+-#include "../include/dag.hpp"
+-#include <iostream>
+-#include <assert.h>
+-
+-/// @file dag.cpp
+-/// @brief Define the @c DAGCircuit method.
+-
+-using namespace std;
+-
+-void hello()
+-{
+-    cout << "Hello world!\n"
+-         << endl;
+-}
+-
+-DAGCircuit::DAGCircuit(int _num_qubits)
+-{
+-    v_num = 0;
+-    num_qubits = _num_qubits;
+-}
+-
+-void DAGCircuit::AddVertex(GateType type, std::vector<unsigned> qubits)
+-{
+-    DAGVertex v = {(int)vertices.size(), type, qubits, false};
+-    // // Construct dependencies(add edges)
+-    std::set<int> inedges;
+-    std::set<int> outedges;
+-    for (auto qubit : qubits)
+-    {
+-        for (int i = vertices.size() - 1; i >= 0; i--)
+-        {
+-            auto &u = vertices[i];
+-            if (std::find(u.qubits.begin(), u.qubits.end(), qubit) != u.qubits.end())
+-            {
+-                inedges.insert(u.id);
+-                v2outedges.at(u.id).insert(v.id);
+-                break;
+-            }
+-        }
+-    }
+-    v2inedges.insert({v.id, inedges});
+-    v2outedges.insert({v.id, outedges});
+-    vertices.push_back(v);
+-    v_num++;
+-}
+-
+-void DAGCircuit::RemoveVertex(DAGVertex &v)
+-{
+-    assert(!v.is_removed);
+-    // Remove vertex
+-    v.is_removed = true;
+-
+-    // Remove edge
+-    std::set<int> &outedges = v2outedges.at(v.id);
+-    for (auto id : outedges)
+-    {
+-        v2inedges.at(id).erase(v.id);
+-    }
+-    v2inedges.erase(v.id);
+-    v2outedges.erase(v.id);
+-    v_num--;
+-}
+-
+-int DAGCircuit::getInedgeNum(DAGVertex &v)
+-{
+-    assert(!v.is_removed);
+-    auto &inedges = v2inedges.at(v.id);
+-    return inedges.size();
+-}
+-
+-int DAGCircuit::getQubitNum()
+-{
+-    return num_qubits;
+-}
+-
+-int DAGCircuit::getVertexNum()
+-{
+-    return v_num;
+-}
+-
+-void DAGCircuit::printGraph()
+-{
+-    std::cout << " --------------------------------------------- \n";
+-    for (auto &v : vertices)
+-    {
+-        if (!v.is_removed)
+-        {
+-            std::cout << " vertex id: " << v.id << "\n";
+-            std::cout << " incoming edges: ";
+-            for (auto id : v2inedges.at(v.id))
+-            {
+-                std::cout << id << " ";
+-            }
+-            std::cout << "\n outcoming edges: ";
+-            for (auto id : v2outedges.at(v.id))
+-            {
+-                std::cout << id << " ";
+-            }
+-            std::cout << "\n\n";
+-        }
+-    }
+-    std::cout << " --------------------------------------------- \n";
+-}
+\ No newline at end of file
+diff --git a/src/gate_schedule.cpp b/src/gate_schedule.cpp
+deleted file mode 100644
+index 98a0cd8..0000000
+--- a/src/gate_schedule.cpp
++++ /dev/null
+@@ -1,253 +0,0 @@
+-// #include "../include/gate_schedule.hpp"
+-#include "../include/qureg.hpp"
+-#include <iostream>
+-#include <vector>
+-#include <sys/time.h>
+-#include <mpi.h>
+-
+-/// @file gate_schedule.cpp
+-/// @brief Implement scheduling algorithm to reduce communication overhead.
+-
+-template <class Type>
+-void QubitRegister<Type>::ApplyGate(DAGVertex &v)
+-{
+-    switch (v.type)
+-    {
+-    case GateType::Hadamard:
+-        assert(v.qubits.size() == 1);
+-        // std::cout << "Apply Hadamard gate...\nvertex: " << v.id << ", quibit: " << v.qubits[0] << "\n";
+-        ApplyHadamard(v.qubits[0]);
+-        break;
+-    case GateType::PauliX:
+-        assert(v.qubits.size() == 1);
+-        // std::cout << "Apply PauliX gate...\nvertex: " << v.id << ", quibit: " << v.qubits[0] << "\n";
+-        ApplyPauliX(v.qubits[0]);
+-        break;
+-    case GateType::PauliY:
+-        assert(v.qubits.size() == 1);
+-        // std::cout << "Apply PauliY gate...\nvertex: " << v.id << ", quibit: " << v.qubits[0] << "\n";
+-        ApplyPauliY(v.qubits[0]);
+-        break;
+-    case GateType::PauliZ:
+-        assert(v.qubits.size() == 1);
+-        // std::cout << "Apply PauliZ gate...\nvertex: " << v.id << ", quibit: " << v.qubits[0] << "\n";
+-        ApplyPauliZ(v.qubits[0]);
+-        break;
+-    case GateType::CPauliX:
+-        assert(v.qubits.size() == 2);
+-        ApplyCPauliX(v.qubits[0], v.qubits[1]);
+-        break;
+-    case GateType::CPauliY:
+-        assert(v.qubits.size() == 2);
+-        ApplyCPauliY(v.qubits[0], v.qubits[1]);
+-        break;
+-    case GateType::CPauliZ:
+-        assert(v.qubits.size() == 2);
+-        ApplyCPauliZ(v.qubits[0], v.qubits[1]);
+-        break;
+-    default: // GateType not exist
+-        assert(false);
+-        break;
+-    }
+-}
+-
+-void identity_permutation(std::vector<std::size_t> &sigma)
+-{
+-    for (std::size_t i = 0; i < sigma.size(); i++)
+-    {
+-        sigma[i] = i;
+-    }
+-}
+-
+-bool is_local_qubit(std::vector<std::size_t> &sigma, unsigned qubit, std::size_t m)
+-{
+-    return sigma[qubit] < m;
+-}
+-
+-// how many local qubits does the gate acts on
+-int get_local_qubits_num(std::vector<std::size_t> &sigma, std::vector<unsigned> &qubits, std::size_t m)
+-{
+-    int count = 0;
+-    for (auto qubit : qubits)
+-    {
+-        count += (sigma[qubit] < m);
+-    }
+-    return count;
+-}
+-
+-void swap(std::size_t &a, std::size_t &b)
+-{
+-    std::size_t temp = a;
+-    a = b;
+-    b = temp;
+-}
+-
+-void print_permutation(std::vector<std::size_t> &sigma)
+-{
+-    std::cout << "Permutation: \n";
+-    for (int i = 0; i < sigma.size(); i++)
+-    {
+-        std::cout << i << " ";
+-    }
+-    std::cout << "\n";
+-    for (int i = 0; i < sigma.size(); i++)
+-    {
+-        std::cout << sigma[i] << " ";
+-    }
+-    std::cout << "\n";
+-}
+-
+-void scheduler(DAGCircuit &G, QubitRegister<> &psi)
+-{
+-    struct timeval time1, time2;
+-    double start, end;
+-    double duration_optmized_order = 0;
+-    std::vector<DAGVertex> inst;
+-    // num of local qubits.
+-    std::size_t m = G.getQubitNum() - qhipster::ilog2(qhipster::mpi::Environment::GetStateSize());
+-    int myrank = qhipster::mpi::Environment::GetStateRank();
+-    if (myrank == 0)
+-        std::cout << m << " local qubits, " << G.getQubitNum() - m << " global qubits. \n";
+-    std::vector<std::size_t> sigma(G.getQubitNum());
+-    identity_permutation(sigma);
+-
+-    while (G.getVertexNum() > 0)
+-    {
+-        for (auto &v : G.vertices)
+-        {
+-            if (!v.is_removed && G.getInedgeNum(v) == 0 /* v has no incoming edges */ &&
+-                get_local_qubits_num(sigma, v.qubits, m) == v.qubits.size() /* v acts on local qubits */)
+-            {
+-                // qhipster::mpi::StateBarrier();
+-                // start = MPI_Wtime();
+-
+-                // psi.ApplyGate(v);
+-                inst.push_back(v);
+-
+-                // qhipster::mpi::StateBarrier();
+-                // duration_optmized_order += MPI_Wtime() - start;
+-
+-                G.RemoveVertex(v);
+-            }
+-        }
+-
+-        int _a = 0;
+-        int da = 0;
+-        std::vector<std::size_t> _sigma(G.getQubitNum());
+-        std::vector<std::size_t> dsigma(G.getQubitNum());
+-        identity_permutation(_sigma);
+-
+-        // try all m(n-m) possible permutations
+-        for (int l = 0; l < G.getQubitNum(); l++)
+-        {
+-            if (is_local_qubit(sigma, l, m))
+-            {
+-                for (int g = G.getQubitNum() - 1; g >= 0; g--)
+-                {
+-                    if (!is_local_qubit(sigma, g, m))
+-                    {
+-                        // std::cout << l << " " << g << "\n";
+-                        // σ' = σ◦(lg)
+-                        for (int i = 0; i < G.getQubitNum(); i++)
+-                        {
+-                            if (sigma[i] == l)
+-                            {
+-                                dsigma[i] = g;
+-                            }
+-                            else if (sigma[i] == g)
+-                            {
+-                                dsigma[i] = l;
+-                            }
+-                            else
+-                            {
+-                                dsigma[i] = sigma[i];
+-                            }
+-                        }
+-                        // print_permutation(dsigma);
+-                        da = 0;
+-                        for (auto &v : G.vertices)
+-                        {
+-                            if (!v.is_removed && get_local_qubits_num(dsigma, v.qubits, m) == v.qubits.size())
+-                            {
+-                                da++;
+-                            }
+-                        }
+-                        // std::cout << "da: " << da << "\n";
+-                        if (da > _a)
+-                        {
+-                            _sigma = dsigma;
+-                            _a = da;
+-                        }
+-                    }
+-                }
+-            }
+-        }
+-        if (_a > 0)
+-        {
+-            sigma = _sigma;
+-            if (myrank == 0)
+-            {
+-                print_permutation(sigma);
+-            }
+-
+-            // qhipster::mpi::StateBarrier();
+-            // gettimeofday(&time1, (struct timezone *)0);
+-
+-            psi.PermuteByLocalGlobalExchangeOfQubitPairs(sigma, "direct");
+-
+-            // qhipster::mpi::StateBarrier();
+-            // gettimeofday(&time2, (struct timezone *)0);
+-            // duration_optmized_order += time2.tv_sec + time2.tv_usec * 1.0e-6 - time1.tv_sec - time1.tv_usec * 1.0e-6;
+-        }
+-        else
+-        {
+-            // it seems we can not remove communication from any gate by permutating qubits,
+-            // so we just apply gate directly.
+-            for (auto &v : G.vertices)
+-            {
+-                if (!v.is_removed && G.getInedgeNum(v) == 0 /* v has no incoming edges */)
+-                {
+-                    // qhipster::mpi::StateBarrier();
+-                    // start = MPI_Wtime();
+-
+-                    // psi.ApplyGate(v);
+-                    inst.push_back(v);
+-
+-                    // if (myrank == 0)
+-                    // {
+-                    //     print_permutation(sigma);
+-                    //     std::cout << v.qubits[0] << " " << v.qubits[1] << "\n";
+-                    // }
+-
+-                    // qhipster::mpi::StateBarrier();
+-                    // duration_optmized_order += MPI_Wtime() - start;
+-                    G.RemoveVertex(v);
+-                }
+-            }
+-        }
+-    }
+-    // identity_permutation(sigma);
+-
+-    // if (myrank == 0)
+-    //     print_permutation(sigma);
+-    // for (std::size_t q = 0; q < G.getQubitNum(); q++)
+-    // {
+-    //     // create inverse map.
+-    //     sigma[G.getQubitNum() - q - 1] = q;
+-    // }
+-    qhipster::mpi::StateBarrier();
+-    psi.EnableStatistics();
+-    start = MPI_Wtime();
+-
+-    for (auto &v : inst)
+-    {
+-        psi.ApplyGate(v);
+-    }
+-    qhipster::mpi::StateBarrier();
+-    duration_optmized_order = MPI_Wtime() - start;
+-    psi.GetStatistics();
+-    psi.DisableStatistics();
+-
+-    if (myrank == 0)
+-        std::cout << "optmized qubit order --> Simulation time = " << duration_optmized_order << "\n";
+-}
+\ No newline at end of file
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+deleted file mode 100644
+index baf7254..0000000
+--- a/tests/CMakeLists.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-################################################################################
+-
+-add_executable(hello_world.exe hello_world.cpp)
+-target_link_libraries(hello_world.exe PRIVATE iqs)
+-
+-add_executable(test1qubitgate.exe test1qubitgate.cpp)
+-target_link_libraries(test1qubitgate.exe PRIVATE iqs)
+-
+-add_executable(test2qubitgate.exe test2qubitgate.cpp)
+-target_link_libraries(test2qubitgate.exe PRIVATE iqs)
+-
+-################################################################################
+-
+-set_target_properties( hello_world.exe
+-                       test1qubitgate.exe
+-                       test2qubitgate.exe
+-    PROPERTIES
+-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+-)
+-
+-################################################################################
+diff --git a/tests/hello_world.cpp b/tests/hello_world.cpp
+deleted file mode 100644
+index a4b58ce..0000000
+--- a/tests/hello_world.cpp
++++ /dev/null
+@@ -1,18 +0,0 @@
+-
+-#include <sys/time.h>
+-
+-#include "../include/qureg.hpp"
+-
+-int main(int argc, char **argv)
+-{
+-    qhipster::mpi::Environment env(argc, argv);
+-    if (env.IsUsefulRank() == false)
+-        return 0;
+-    int myrank = env.GetStateRank();
+-    if (myrank == 0)
+-        std::cout << " ---------------------- \n"
+-                  << " ---- Hello world! ---- \n"
+-                  << " ---------------------- \n";
+-
+-    hello();
+-}
+diff --git a/tests/test1qubitgate.cpp b/tests/test1qubitgate.cpp
+deleted file mode 100644
+index 10cd105..0000000
+--- a/tests/test1qubitgate.cpp
++++ /dev/null
+@@ -1,71 +0,0 @@
+-#include <mpi.h>
+-
+-#include "../include/qureg.hpp"
+-#include "../include/gate_schedule.hpp"
+-
+-int main(int argc, char **argv)
+-{
+-    qhipster::mpi::Environment env(argc, argv);
+-    if (env.IsUsefulRank() == false)
+-        return 0;
+-    int myrank = env.GetStateRank();
+-    if (myrank == 0)
+-        std::cout << " --------------------------------------------------------------------------------- \n"
+-                  << " ---- Reducing communication overhead via qubit reordering: 1 qubit gate test ---- \n"
+-                  << " --------------------------------------------------------------------------------- \n";
+-    int num_qubits = 22;
+-    if (argc != 2)
+-    {
+-        if (myrank == 0)
+-            fprintf(stderr, "usage: %s <num_qubits>\n", argv[0]);
+-        exit(1);
+-    }
+-    else
+-    {
+-        num_qubits = atoi(argv[1]);
+-    }
+-
+-    // Variables for the timing.
+-    double start, end;
+-
+-    // We consider a simple circuit, with Hadamard, X, Y, Z acting on the last 10 qubits.
+-    QubitRegister<ComplexDP> psi_trivial_order(num_qubits, "base", 0);
+-    // Simulate circuit.
+-    qhipster::mpi::StateBarrier();
+-    psi_trivial_order.EnableStatistics();
+-    start = MPI_Wtime();
+-
+-    for (int q = num_qubits - 10; q < num_qubits; ++q)
+-    {
+-        psi_trivial_order.ApplyHadamard(q);
+-        psi_trivial_order.ApplyPauliX(q);
+-        psi_trivial_order.ApplyPauliY(q);
+-        psi_trivial_order.ApplyPauliZ(q);
+-    }
+-    end = MPI_Wtime();
+-    psi_trivial_order.GetStatistics();
+-    psi_trivial_order.DisableStatistics();
+-
+-    if (myrank == 0)
+-        std::cout << "trivial qubit order --> Simulation time = " << end - start << "\n";
+-
+-    /*--------------------------------------------------------------------------*/
+-    QubitRegister<ComplexDP> psi_optmized_order(num_qubits, "base", 0);
+-    // construct DAG
+-    DAGCircuit G(num_qubits);
+-    for (unsigned q = num_qubits - 10; q < num_qubits; ++q)
+-    {
+-        G.AddVertex(GateType::Hadamard, q);
+-        G.AddVertex(GateType::PauliX, q);
+-        G.AddVertex(GateType::PauliY, q);
+-        G.AddVertex(GateType::PauliZ, q);
+-    }
+-
+-    scheduler(G, psi_optmized_order);
+-
+-    // Verify that the final state is the same.
+-    psi_optmized_order.PermuteQubits(psi_trivial_order.qubit_permutation->map, "direct");
+-    double overlap_sq = std::norm(psi_trivial_order.ComputeOverlap(psi_optmized_order));
+-    if (myrank == 0)
+-        std::cout << "Squared overlap of states at the end of the two simulations = " << overlap_sq << "\n\n";
+-}
+diff --git a/tests/test2qubitgate.cpp b/tests/test2qubitgate.cpp
+deleted file mode 100644
+index 76cf95a..0000000
+--- a/tests/test2qubitgate.cpp
++++ /dev/null
+@@ -1,69 +0,0 @@
+-#include <mpi.h>
+-
+-#include "../include/qureg.hpp"
+-#include "../include/gate_schedule.hpp"
+-
+-int main(int argc, char **argv)
+-{
+-    qhipster::mpi::Environment env(argc, argv);
+-    if (env.IsUsefulRank() == false)
+-        return 0;
+-    int myrank = env.GetStateRank();
+-    if (myrank == 0)
+-        std::cout << " --------------------------------------------------------------------------------- \n"
+-                  << " ---- Reducing communication overhead via qubit reordering: 1 qubit gate test ---- \n"
+-                  << " --------------------------------------------------------------------------------- \n";
+-    int num_qubits = 22;
+-    if (argc != 2)
+-    {
+-        if (myrank == 0)
+-            fprintf(stderr, "usage: %s <num_qubits>\n", argv[0]);
+-        exit(1);
+-    }
+-    else
+-    {
+-        num_qubits = atoi(argv[1]);
+-    }
+-
+-    // Variables for the timing.
+-    double start, end;
+-
+-    // We consider a simple circuit, with Hadamard, X, Y, Z acting on the last 10 qubits.
+-    QubitRegister<ComplexDP> psi_trivial_order(num_qubits, "base", 0);
+-    // Simulate circuit.
+-    qhipster::mpi::StateBarrier();
+-    psi_trivial_order.EnableStatistics();
+-    start = MPI_Wtime();
+-
+-    // for (int q = num_qubits - 10; q < num_qubits; ++q)
+-    // {
+-    //     psi_trivial_order.ApplyCPauliX(num_qubits - q - 1, q);
+-    //     psi_trivial_order.ApplyCPauliY(num_qubits - q - 1, q);
+-    //     psi_trivial_order.ApplyCPauliZ(num_qubits - q - 1, q);
+-    // }
+-    end = MPI_Wtime();
+-    psi_trivial_order.GetStatistics();
+-    psi_trivial_order.DisableStatistics();
+-
+-    if (myrank == 0)
+-        std::cout << "trivial qubit order --> Simulation time = " << end - start << "\n";
+-
+-    /*--------------------------------------------------------------------------*/
+-    QubitRegister<ComplexDP> psi_optmized_order(num_qubits, "base", 0);
+-    // construct DAG
+-    DAGCircuit G(num_qubits);
+-    for (unsigned q = num_qubits - 10; q < num_qubits; ++q)
+-    {
+-        G.AddVertex(GateType::CPauliX, num_qubits - q - 1, q);
+-        G.AddVertex(GateType::CPauliY, num_qubits - q - 1, q);
+-        G.AddVertex(GateType::CPauliZ, num_qubits - q - 1, q);
+-    }
+-
+-    scheduler(G, psi_optmized_order);
+-
+-    // Verify that the final state is the same.
+-    psi_optmized_order.PermuteQubits(psi_trivial_order.qubit_permutation->map, "direct");
+-    double overlap_sq = std::norm(psi_trivial_order.ComputeOverlap(psi_optmized_order));
+-    if (myrank == 0)
+-        std::cout << "Squared overlap of states at the end of the two simulations = " << overlap_sq << "\n\n";
+-}
