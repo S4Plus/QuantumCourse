@@ -13,4 +13,7 @@
 - [ASPLOS 2019] [Not All Qubits Are Created Equal:
   A Case for Variability-Aware Policies for NISQ-Era Quantum Computers](https://dl.acm.org/doi/10.1145/3297858.3304007)
 - [[ASPDAC 2019] Alwin Zulehner, Robert Wille. (https://dl.acm.org/doi/proceedings/10.1145/3287624)] [Compiling SU(4) Quantum Circuits to IBM QX Architectures](https://dl.acm.org/doi/10.1145/3287624.3287704)
+- [ICCAD 2020] Xiaozhen Zhou, Yuan Feng, Sanjiang Li. [A Monte Carlo Tree Search Framework for Quantum Circuit Transformation](https://dl.acm.org/doi/10.1145/3400302.3415621)
+- [ISCA 2021] Jonathan M. Baker, Andrew Litteken, Casey Duckering, Henry Hoffmann, Hannes Bernien, Frederic T. Chong. [Exploiting long-distance interactions and tolerating atom loss in neutral atom quantum architectures](https://dl.acm.org/doi/10.1109/ISCA52012.2021.00069)
+- [ISCA 2022] Lingling Lao, Dan E. Browne[2QAN: a quantum compiler for 2-local qubit hamiltonian simulation algorithms]{https://dl.acm.org/doi/abs/10.1145/3470496.3527394}
 - ...
